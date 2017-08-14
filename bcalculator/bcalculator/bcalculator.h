@@ -18,7 +18,7 @@ const char *b_Operations[] = {
 void bshiftl(unsigned int *n1, unsigned int *n2);
 void bshiftr(unsigned int *n1, unsigned int *n2);
 void basr(unsigned int *n1, unsigned int *n2);
-static int GetMostSignificantBit(unsigned int var);
+static int GetMostSignificantBit(unsigned int num);
 
 #else
 #warning "You have included bitwise operations more than once in your script."

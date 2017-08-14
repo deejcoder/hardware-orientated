@@ -22,8 +22,9 @@ void basr(unsigned int *n1, unsigned int *n2) {
         Except the most significant bit is set to the previous
         most significant.
     */
-    int MSB = GetMostSignificantBit(*n1);
+ 
     while (*n2 > 0) {
+        int MSB = GetMostSignificantBit(*n1);
         *n1 = *n1 >> 1;
 
         //Setting the bit to previous MSB
@@ -34,8 +35,8 @@ void basr(unsigned int *n1, unsigned int *n2) {
     }
 }
 
-//Helper function for basr(unsigned int *n1, unsigned int *n2);
-static int GetMostSignificantBit(unsigned int var) {
+//Helper function
+static int GetMostSignificantBit(unsigned int num) {
     /*
         sizeof returns a value in bytes,
         multiplying this by 8 returns # of bits.
@@ -52,11 +53,48 @@ static int GetMostSignificantBit(unsigned int var) {
         I then want to compare the var with the mask:
         100...000 (in binary) i.e most significant
     */
-    if (var & mask) {
+    if (num & mask) {
         return 1;
     }
     return 0;
 }
+
+//Helper function
+static int GetLeastSignificantBit(unsigned int num) {
+    unsigned int mask = 1;
+    if (num & mask) {
+        return 1;
+    }
+
+    return 0;
+
+}
+
+void brol(unsigned int *n1, unsigned int *n2) {
+
+    while (*n2 > 0) {
+        int MSB = GetMostSignificantBit(*n1);
+        *n1 = *n1 << 1;
+        *n1 |= MSB;
+        *n2 = *n2 - 1;
+    }
+    
+}
+
+void bror(unsigned int *n1, unsigned int *n2) {
+
+    int bits = sizeof(unsigned int) * 8;
+
+    while (*n2 > 0) {
+        int LSB = GetLeastSignificantBit(*n1);
+        printf("least significant bit: %d", LSB);
+        *n1 = *n1 >> 1;
+        *n1 |= LSB << (bits - 1);
+        *n2 = *n2 - 1;
+    }
+}
+
+
 
 int main() {
 
@@ -94,6 +132,8 @@ int main() {
     else if (strcmp("shl", op) == 0) bshiftl(&n1, &n2);
     else if (strcmp("shr", op) == 0) bshiftr(&n1, &n2);
     else if (strcmp("asr", op) == 0) basr(&n1, &n2);
+    else if (strcmp("rol", op) == 0) brol(&n1, &n2);
+    else if (strcmp("ror", op) == 0) bror(&n1, &n2);
 
     else {
         return printf("You have used an invalid operator, \"%s\", try again.", op);
