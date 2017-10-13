@@ -1,0 +1,21 @@
+13-15: Networking
+15-16: Hardware
+17-22: Computer Systems
+22-23: Hardware
+
+
+
+Priority: Networking (10%), Computer Systems (20%), Hardware (%9), Hardware (15%), Linear Algebra (4%)
+
+Networking: 6-7 days
+Linear Algebra: 3 days
+Computer Systems: 7 days
+Hardware: 4 days
+
+
+-----------------------------------
+Networking (10%+3%): 6-7 days END: 20th [PRIORITY]
+Linear Algebra (4%): 4 days END: 20th
+Hardware (9%): 2 days: 14th END 16th
+Computer Systems (20%): 10 days END 24th [PRIORITY]
+Hardware (15%) 4 days: 18th END 22nd
