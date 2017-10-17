@@ -5,19 +5,17 @@
 using namespace std;
 
 //Memory vs Performance? The application depends
-#define BIGINT_SIZE 33
+#define BIGINT_SIZE 100
 
 bigUInt::bigUInt() {
-    this->p = new char[BIGINT_SIZE];
-    memset(this->p, '\0', BIGINT_SIZE);
+    this->p = new char[BIGINT_SIZE]();
     this->p[0] = '0';
 }
 
 bigUInt::bigUInt(unsigned int n) {
 
     string nstr = to_string(n);
-    this->p = new char[BIGINT_SIZE];
-    memset(this->p, '\0', BIGINT_SIZE);
+    this->p = new char[BIGINT_SIZE]();
     
 
     //for all values of size_t, size_t >= 0 since unsigned, end at 0 else breaking point
@@ -30,8 +28,7 @@ bigUInt::bigUInt(unsigned int n) {
 
 bigUInt::bigUInt(const char *s) {
     size_t len = strlen(s);
-    this->p = new char[BIGINT_SIZE];
-    memset(this->p, '\0', BIGINT_SIZE);
+    this->p = new char[BIGINT_SIZE]();
 
     int counter = 0;
     for (size_t i = len; i-- > 0;) {
@@ -42,17 +39,20 @@ bigUInt::bigUInt(const char *s) {
 
 bigUInt::bigUInt(const bigUInt &x) {
     size_t len = strlen(x.get_p());
-    this->p = new char[len];
-    memset(this->p, '\0', len);
-    strcpy(this->p, x.get_p());
+    this->p = new char[BIGINT_SIZE]();
+    //strcpy(this->p, x.get_p());
 }
 
 bigUInt::~bigUInt() {
-    delete[] (this->p); //free the array from heap
+    if (this->p) {
+        delete[](this->p); //free the array from heap
+    }
 }
 
 void bigUInt::add(unsigned int n) {
-
+    for (int i = n; i-- > 0;) {
+        this->increment();
+    }
 }
 
 void bigUInt::add(const bigUInt &x) {
@@ -63,12 +63,25 @@ void bigUInt::increment() {
     char num = this->get_p()[0]; int index = 0;
     
     while (num == '9') {
+        if (index >= strlen(this->get_p())) break;
         num = this->get_p()[index];
+        index++;
     }
+    if (index == 0) {
+        this->p[index]++;
+    }
+    else if(index != strlen(this->get_p())) {
 
-    this->p[index]++;
-    for (size_t i = index; i-- > 0;) {
-        this->p[i] = '0';
+
+        index--;
+        this->p[index]++;
+        for (; index-- > 0;) {
+            this->p[index] = '0';
+        }
+    }
+    else {
+        //...set last to one, add one at start (in reverse)
+
     }
 }
 
