@@ -4,11 +4,11 @@
 
 using namespace std;
 
-//Memory vs Performance? The application depends
-#define BIGINT_SIZE 100
-
+/*
+        CONSTRUCTORS
+*/
 bigUInt::bigUInt() {
-    this->p = new char[BIGINT_SIZE]();
+    this->p = new char[1]();
     this->p[0] = '0';
 }
 
@@ -26,57 +26,109 @@ bigUInt::bigUInt(unsigned int n) {
     }
 }
 
+//WARNING: size != actual size, to be fixed ->> fixed
 bigUInt::bigUInt(const char *s) {
     size_t len = strlen(s);
-    this->p = new char[len + 1]();
+    int zeros = 0;
+
+    for (int i = 0; i < len; i++) {
+        if (s[i] != '0') break;
+        zeros++;
+    }
+
+    this->p = new char[(len - zeros) + 1]();
 
     int counter = 0;
     bool nonzero = false;
-    for (size_t i = len; i-- > 0;) {
+    for (size_t i = len; i-- > zeros;) {
 
         //skip leading zeros
-        if (!nonzero && s[i] == '0') continue;
+        //if (!nonzero && s[i] == '0') continue;
 
         this->p[counter] = s[i];
         counter++;
     }
 }
 
+//Deep copy
 bigUInt::bigUInt(const bigUInt &x) {
     size_t len = strlen(x.get_p());
+
+    //since p is a pointer, free memory
+    delete[] this->p;
+    //reallocate with new size
     this->p = new char[len + 1]();
-    //strcpy(this->p, x.get_p());
+
+    //copy the values
+    for (int i = 0; i < len; i++) {
+        this->p[i] = x.get_p()[i];
+    }
 }
 
+/*
+        DESTRUCTOR
+*/
 bigUInt::~bigUInt() {
     if (this->p) {
         delete[](this->p); //free the array from heap
     }
 }
 
+
+/*
+        OPERATORS
+*/
 void bigUInt::add(unsigned int n) {
-    printf("n: %d\n", n);
-    for (int i = n; i-- > 0;) {
-        this->increment();
-    }
+    bigUInt *tmp = new bigUInt(n);
+    this->add(*tmp);
+    delete tmp;
 }
 
 void bigUInt::add(const bigUInt &x) {
-    int multiplier = 1;
-    int value;
+    int lenthis = strlen(this->p);
+    int lenx = strlen(x.get_p());
 
-    for (int i = 0; i < strlen(x.p); i++) {
+    int maxlen = (lenthis > lenx) ? lenthis : lenx;
 
-        value = x.p[i] - '0'; //char as int
-        this->add(value*multiplier);
-        multiplier *= 10;
+    string str;
+    bool carry = false;
+
+    for (int i = 0; i < maxlen; i++) {
+        
+        //get the # in the ith index, if ith index doesn't exist, zero
+        int num1 = (i >= lenthis) ? 0 : this->p[i] - '0';
+        int num2 = (i >= lenx) ? 0 : x.get_p()[i] - '0';
+
+        //do they sum over 9?
+        int sum = num1 + num2 + ((carry) ? 1 : 0);
+
+        //if they do we must carry over
+        if (sum > 9) {
+            sum -= 10;
+            carry = true;
+        }
+        //else simply add
+        else {
+            carry = false;
+        }
+
+        str.push_back(sum + '0'); //keep least significant at index 0
+    }
+    if (carry) {
+        str.insert(str.begin(), '1'); //insert 1 @ most significant
+    }
+
+    delete[](this->p);
+    this->p = new char[str.length() + 1];
+    for (int i = 0; i < str.length(); i++) {
+        this->p[i] = str[i];
     }
 }
 
 void bigUInt::increment() {
     int index = 0;
     int len = strlen(this->p);
-    
+
     //since the number is in reverse, find the first cell with a non-9
     char num = this->p[0];
     while (num == '9') {
@@ -84,7 +136,7 @@ void bigUInt::increment() {
             index++; //set it to > len
             break;
         }
-            
+
         num = this->p[index];
         index++;
     }
@@ -95,7 +147,7 @@ void bigUInt::increment() {
     }
 
     //case 2: if all digits are 999, add one @ end & set all else to 0
-    if(index > len) {
+    if (index > len) {
 
         //adding one cell & set all cells to 0, assuring \0 @ end
         len++;
@@ -117,12 +169,10 @@ void bigUInt::increment() {
             this->p[index] = '0';
         }
     }
-    printf("\nthis: %s, length: %d, %d", this->p, len, strlen(this->p));
 }
 
 void bigUInt::print() {
     const size_t len = strlen(this->get_p());
-
     for (size_t i = len; i-- > 0;) {
         cout << this->get_p()[i];
     }
@@ -130,17 +180,76 @@ void bigUInt::print() {
 }
 
 bigUInt bigUInt::operator+(const bigUInt &x) {
-    return 1;
+    bigUInt result = *this;
+    result.add(x);
+    return result;
 }
 
 bigUInt bigUInt::operator-(const bigUInt &x) {
-    return 1;
-}
-/*
-bigUInt & bigUInt::operator=(const bigUInt &x) {
-    return x;
+    try {
+        printf("test1");
+        int m = strlen(this->p);
+        int n = strlen(x.get_p());
+        if (m - n < 0) {
+            throw(1);
+        }
+
+        printf("test2");
+        int carry = 0;
+        for (int i = 0; i < n; i++) {
+
+            //since subtracting no need to subtract '0' as well i.e if p[i] = 2 and x[i] = 1 then 2 - 1 = 50 - 49 = 1
+            int sub = (this->p[i] - x.get_p()[i]) - carry;
+            if (sub < 0) {
+                carry = 1;
+                sub = this->p[i];
+                printf("test3");
+            }
+            else {
+                printf("test4");
+                carry = 0;
+            }
+            this->p[i] -= sub;
+        }
+        printf("test5");
+        if (carry) {
+            throw(1);
+        }
+
+
+    }
+    catch (int error) {
+        switch (error) {
+        case 1: cout << "Invalid Subtraction" << endl; break;
+        }
+    }
+    printf("test6");
+    return *this;
 }
 
+//assignment
+bigUInt & bigUInt::operator=(const bigUInt &x) {
+    if (this != &x) {
+
+        //first clear any memory used in the heap
+        delete[](this->p);
+
+        //reallocate with correct array size
+        this->p = new char[strlen(x.get_p()) + 1];
+
+        //copy
+        for (int i = 0; i < strlen(x.get_p()); i++) {
+            this->p[i] = x.get_p()[i];
+        }
+    }
+    return *this;
+}
+
+//cout
 std::ostream & operator<<(std::ostream &out, const bigUInt &x) {
-    return true;
-}*/
+    
+    for (int i = 0; i < strlen(x.get_p()); i++) {
+        out << x.get_p()[i];
+    }
+    return out;
+}
