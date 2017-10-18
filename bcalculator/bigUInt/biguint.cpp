@@ -1,3 +1,11 @@
+/*
+    Dylan Tonks
+    Student ID 16058989
+    159.270 Assignment 5
+
+*/
+
+
 #include <iostream>
 #include <string> // No one specified we cannot use this...
 #include "biguint.h"
@@ -7,10 +15,7 @@ using namespace std;
 /*
         CONSTRUCTORS
 */
-bigUInt::bigUInt() {
-    this->p = new char[1]();
-    this->p[0] = '0';
-}
+bigUInt::bigUInt() : bigUInt((unsigned int)0) {}
 
 bigUInt::bigUInt(unsigned int n) {
 
@@ -31,6 +36,7 @@ bigUInt::bigUInt(const char *s) {
     size_t len = strlen(s);
     int zeros = 0;
 
+    //skip leading zeros
     for (int i = 0; i < len; i++) {
         if (s[i] != '0') break;
         zeros++;
@@ -40,10 +46,9 @@ bigUInt::bigUInt(const char *s) {
 
     int counter = 0;
     bool nonzero = false;
-    for (size_t i = len; i-- > zeros;) {
 
-        //skip leading zeros
-        //if (!nonzero && s[i] == '0') continue;
+    //range: between len & zeros
+    for (size_t i = len; i-- > zeros;) {
 
         this->p[counter] = s[i];
         counter++;
@@ -119,7 +124,7 @@ void bigUInt::add(const bigUInt &x) {
     }
 
     delete[](this->p);
-    this->p = new char[str.length() + 1];
+    this->p = new char[str.length() + 1]();
     for (int i = 0; i < str.length(); i++) {
         this->p[i] = str[i];
     }
@@ -180,51 +185,51 @@ void bigUInt::print() {
 }
 
 bigUInt bigUInt::operator+(const bigUInt &x) {
-    bigUInt result = *this;
+    bigUInt result(*this);
     result.add(x);
     return result;
 }
 
 bigUInt bigUInt::operator-(const bigUInt &x) {
+    bigUInt result(*this);
+
+    int m = strlen(result.p);
+    int n = strlen(x.get_p());
+
     try {
-        printf("test1");
-        int m = strlen(this->p);
-        int n = strlen(x.get_p());
         if (m - n < 0) {
             throw(1);
         }
 
-        printf("test2");
         int carry = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < m; i++) {
 
             //since subtracting no need to subtract '0' as well i.e if p[i] = 2 and x[i] = 1 then 2 - 1 = 50 - 49 = 1
-            int sub = (this->p[i] - x.get_p()[i]) - carry;
+            int sub = (result.p[i] - x.get_p()[i]) - carry;
+
             if (sub < 0) {
                 carry = 1;
-                sub = this->p[i];
-                printf("test3");
+                sub = result.p[i];
             }
             else {
-                printf("test4");
                 carry = 0;
             }
-            this->p[i] -= sub;
+            
+            result.p[i] -= sub;
         }
-        printf("test5");
         if (carry) {
             throw(1);
         }
 
-
     }
     catch (int error) {
         switch (error) {
-        case 1: cout << "Invalid Subtraction" << endl; break;
+        case 1: printf("Invalid subtraction"); break;
+
         }
     }
-    printf("test6");
-    return *this;
+
+    return result;
 }
 
 //assignment
@@ -235,8 +240,7 @@ bigUInt & bigUInt::operator=(const bigUInt &x) {
         delete[](this->p);
 
         //reallocate with correct array size
-        this->p = new char[strlen(x.get_p()) + 1];
-
+        this->p = new char[strlen(x.get_p()) + 1]();
         //copy
         for (int i = 0; i < strlen(x.get_p()); i++) {
             this->p[i] = x.get_p()[i];
