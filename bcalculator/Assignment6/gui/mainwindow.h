@@ -20,7 +20,6 @@ public slots:
     void serialDataReady();
 
 private slots:
-    void on_pushButton_clicked();
 
     void on_stepperPower_clicked();
 
@@ -28,11 +27,15 @@ private slots:
 
     void on_stepperSpeed_valueChanged(int value);
 
-    void on_pushButton_clicked(bool checked);
-
     void on_ledgPower_toggled(bool checked);
 
     void on_ledbPower_toggled(bool checked);
+
+    void on_servoSpeed_valueChanged(int value);
+
+    void on_ultraPower_toggled(bool checked);
+
+    void on_lcdMsg_cursorPositionChanged(int arg1, int arg2);
 
 private:
     Ui::MainWindow *ui;

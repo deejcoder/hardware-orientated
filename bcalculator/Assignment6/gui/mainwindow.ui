@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Controller</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="verticalLayoutWidget">
@@ -30,8 +30,54 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
+       <widget class="QWidget" name="tab_5">
+        <attribute name="title">
+         <string>LCD</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>255</width>
+           <height>80</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>30</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <property name="bottomMargin">
+           <number>30</number>
+          </property>
+          <property name="horizontalSpacing">
+           <number>20</number>
+          </property>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lcdMsg">
+            <property name="maxLength">
+             <number>32</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lcdMsgL">
+            <property name="text">
+             <string>Message</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
        <widget class="QWidget" name="tab">
         <attribute name="title">
          <string>Servo Motor</string>
@@ -68,24 +114,11 @@
           <item row="0" column="0">
            <widget class="QLabel" name="servoPowerL">
             <property name="text">
-             <string>Speed</string>
+             <string>Angle</string>
             </property>
            </widget>
           </item>
          </layout>
-        </widget>
-        <widget class="QPushButton" name="pushButton">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>110</y>
-           <width>75</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>PushButton</string>
-         </property>
         </widget>
        </widget>
        <widget class="QWidget" name="tab_2">
@@ -212,8 +245,14 @@
           </item>
           <item row="1" column="1">
            <widget class="QProgressBar" name="ultraDistance">
+            <property name="maximum">
+             <number>200</number>
+            </property>
             <property name="value">
-             <number>24</number>
+             <number>0</number>
+            </property>
+            <property name="format">
+             <string>%p%</string>
             </property>
            </widget>
           </item>
